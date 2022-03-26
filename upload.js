@@ -1,5 +1,5 @@
 const fs = require("fs");
-
+const path = require('path')
 // load puppeteer
 const puppeteer = require('puppeteer');
 
@@ -9,8 +9,9 @@ const studio_url = "https://studio.youtube.com/";
 
 // directory contains the videos you want to upload
 const upload_file_directory = "your video directory";
+
 // change user data directory to your directory
-const chrome_user_data_directory = "C:\\Users\\user\\AppData\\Local\\Chromium\\User Data";
+const chrome_user_data_directory = "/home/rodrigo/snap/chromium/common/chromium";
 
 const title_prefix = "video title prefix ";
 const video_description = "";
@@ -58,7 +59,7 @@ try {
         const browser = await puppeteer.launch(
             {
                 'headless': false,    // have window
-                executablePath: null,
+                executablePath: '/usr/bin/chromium-browser',
                 userDataDir: chrome_user_data_directory,
                 ignoreDefaultArgs: DEFAULT_ARGS,
                 autoClose: false,
@@ -70,8 +71,9 @@ try {
             }
         );
         let page = await browser.newPage();
+await page.setBypassCSP(true);
         await page.setViewport({'width': window_width, 'height': window_height});
-        await page.goto(studio_url, options = {'timeout': 20 * 1000});
+await page.goto(studio_url, options = {'timeout': 20 * 1000,waitUntil: 'networkidle0'});
 
         for (let i = 0; i < files.length; i++) {
             const file_name = files[i];
